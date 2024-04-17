@@ -1,0 +1,4 @@
+CREATE TABLE client (
+    id INTEGER PRIMARY KEY ASC,
+    name TEXT(50) UNIQUE
+)

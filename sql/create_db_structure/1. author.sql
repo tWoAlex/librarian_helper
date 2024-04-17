@@ -1,0 +1,4 @@
+CREATE TABLE author (
+    id INTEGER PRIMARY KEY ASC,
+    name TEXT(50) UNIQUE
+)

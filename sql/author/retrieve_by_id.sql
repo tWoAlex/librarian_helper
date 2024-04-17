@@ -1,0 +1,1 @@
+SELECT * FROM author WHERE id = {id}
