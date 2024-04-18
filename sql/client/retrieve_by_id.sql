@@ -1,1 +1,2 @@
-SELECT * FROM client WHERE id = {id}
+SELECT * FROM client
+WHERE id = {id}

@@ -10,7 +10,7 @@ class Menu:
     def all_menu():
         print(*[
             '\nКниги:',
-            *[f'{id}. {author}. {title}. {genre} ({quantity})'
+            *[f'{id}. {author}, "{title}". {genre} ({quantity})'
               for id, title, author, genre, quantity in BookCRUD.get_all()]
         ], sep='\n')
 

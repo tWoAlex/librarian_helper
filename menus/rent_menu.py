@@ -52,8 +52,8 @@ class Menu:
     def retrieve_actual():
         print(*[
             '\nВыданные книги:',
-            *[f'{book_id}, {client_id}, {date}'
-              for id, book_id, client_id, date
+            *[f'{author}, "{book}", {client}, {date}'
+              for author, book, client, date
               in RentCRUD.get_all_actual()]
         ], sep='\n')
 
