@@ -1,6 +1,6 @@
 from datetime import date
 
-from db_connection import script_from_file, sql_execute, SQL_REQUESTS_DIR
+from db_connection import SQL_REQUESTS_DIR, script_from_file, sql_execute
 
 REQUESTS_DIR = SQL_REQUESTS_DIR.joinpath('rent')
 CREATE_REQUEST = script_from_file(REQUESTS_DIR.joinpath('create.sql'))
@@ -12,15 +12,21 @@ CLOSE_REQUEST = script_from_file(REQUESTS_DIR.joinpath('close.sql'))
 
 
 class RentCRUD:
-    @staticmethod
-    def create(book_id: int, client_id: int, date: date):
+    def create(self,
+               book_id: int, client_id: int,
+               open_date: date, expected_close_date: date) -> None:
+        """Создаёт запись о выдаче указанной книги
+        с указанным читателем в указанную дату и с ожидаемой датой возврата"""
         sql_execute(CREATE_REQUEST.format(
-            book_id=book_id, client_id=client_id, date=str(date), closed=0
+            book_id=book_id, client_id=client_id,
+            open_date=str(open_date),
+            expected_close_date=str(expected_close_date)
         ))
 
-    @staticmethod
-    def get_by_client_and_book(client_id: int, book_id: int) -> tuple | None:
-        """Ищет запись о выдаче по данным читателя и книги"""
+    def get_by_client_and_book(
+            self, client_id: int, book_id: int) -> tuple[int, str] | None:
+        """Ищет запись о выдаче по данным читателя и книги
+        в виде кортежа ()"""
         results = sql_execute(GET_BY_CLIENT_AND_BOOK_REQUEST.format(
             client_id=client_id, book_id=book_id
         ))
@@ -28,10 +34,16 @@ class RentCRUD:
             return None
         return results[0]
 
-    @staticmethod
-    def close(id: int):
-        sql_execute(CLOSE_REQUEST.format(id=id))
+    def close(self, id: int, fact_close_date: date) -> None:
+        """Принимает у читателя книгу по записи с указанным ID
+        в указанную дату"""
+        sql_execute(CLOSE_REQUEST.format(
+            id=id, fact_close_date=str(fact_close_date)
+        ))
 
-    @staticmethod
-    def get_all_actual():
+    def get_all_actual(self) -> list[tuple]:
+        """Возвращает список записей о книгах, находящихся у читателей"""
         return sql_execute(GET_ACTUAL_REQUEST)
+
+
+rent_crud = RentCRUD()

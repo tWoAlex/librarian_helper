@@ -1,4 +1,4 @@
-from db_connection import create_db, purge_db, fulfill_db
+from db_connection import create_db, fulfill_db, purge_db
 
 from . import MenuItem, selection_menu
 

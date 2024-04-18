@@ -1,4 +1,4 @@
-from db_connection import script_from_file, sql_execute, SQL_REQUESTS_DIR
+from db_connection import SQL_REQUESTS_DIR, script_from_file, sql_execute
 
 REQUESTS_DIR = SQL_REQUESTS_DIR.joinpath('client')
 CREATE_REQUEST = script_from_file(REQUESTS_DIR.joinpath('create.sql'))
@@ -10,25 +10,30 @@ GET_ALL_REQUEST = script_from_file(REQUESTS_DIR.joinpath('retrieve_all.sql'))
 
 
 class ClientCRUD:
-    @staticmethod
-    def create(name: str) -> None:
+    def create(self, name: str) -> None:
+        """Создаёт читателя с указанным именем"""
         sql_execute(CREATE_REQUEST.format(name=name))
 
-    @staticmethod
-    def update(id: int, name: str) -> None:
+    def update(self, id: int, name: str) -> None:
+        """Обновляет имя читателя с указанным ID"""
         sql_execute(UPDATE_REQUEST.format(id=id, name=name))
 
-    @staticmethod
-    def delete(id: int) -> None:
+    def delete(self, id: int) -> None:
+        """Удаляет читателя с указанным ID"""
         sql_execute(DELETE_REQUEST.format(id=id))
 
-    @staticmethod
-    def get_by_id(id: int) -> int | None:
+    def get_by_id(self, id: int) -> tuple[int, str] | None:
+        """Возвращает данные читателя с указанным ID
+        в виде кортежа (id, имя_читателя)"""
         clients = sql_execute(GET_BY_ID_REQUEST.format(id=id))
         if len(clients):
             return clients[0]
 
-    @staticmethod
-    def get_all() -> list[tuple[int, str]]:
+    def get_all(self) -> list[tuple[int, str]]:
+        """Возвращает список читателей
+        в виде кортежей (id, имя_читателя)"""
         clients = sql_execute(GET_ALL_REQUEST)
         return sorted(clients, key=lambda x: x[1])
+
+
+client_crud = ClientCRUD()

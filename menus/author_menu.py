@@ -1,55 +1,53 @@
-from cruds.author import AuthorCRUD
+from cruds.author import author_crud
 
 from . import MenuItem, get_number_menu, get_text_menu, selection_menu
 
 
 class Menu:
-    @staticmethod
-    def all_menu():
+    def all_menu(self):
         print(*[
             '\nАвторы:',
-            *[f'{name} ({id})' for id, name in AuthorCRUD.get_all()]
+            *[f'{name} ({id})' for id, name in author_crud.get_all()]
         ], sep='\n')
 
-    @staticmethod
-    def get_by_id_menu() -> tuple[int, str]:
+    def get_by_id_menu(self) -> tuple[int, str]:
         author = None
         while author is None:
             id = get_number_menu('Номер автора')
-            author = AuthorCRUD.get_by_id(id)
+            author = author_crud.get_by_id(id)
             if author is None:
                 print('Автор в базе не найден')
         return author
 
-    @staticmethod
-    def create_menu() -> None:
-        AuthorCRUD.create(get_text_menu('Имя автора'))
+    def create_menu(self) -> None:
+        author_crud.create(get_text_menu('Имя автора'))
 
-    @staticmethod
-    def update_menu() -> None:
+    def update_menu(self) -> None:
         author, name = None, None
         while any((author is None, name is None)):
             if author is None:
-                author = Menu.get_by_id_menu()
+                author = self.get_by_id_menu()
             elif name is None:
                 name = get_text_menu('Имя автора')
-        AuthorCRUD.update(id=author[0], name=name)
+        author_crud.update(id=author[0], name=name)
 
-    @staticmethod
-    def delete_menu():
+    def delete_menu(self):
         author = None
         while author is None:
-            author = Menu.get_by_id_menu()
-        AuthorCRUD.delete(author[0])
+            author = self.get_by_id_menu()
+        author_crud.delete(author[0])
+
+
+menu = Menu()
 
 
 def author_menu():
     menu_items = {
         '1': MenuItem('1. Список всех авторов (Автор, номер)',
-                      Menu.all_menu),
-        '2': MenuItem('2. Создать автора', Menu.create_menu),
-        '3': MenuItem('3. Изменить автора', Menu.update_menu),
-        '4': MenuItem('4. Удалить автора', Menu.delete_menu),
+                      menu.all_menu),
+        '2': MenuItem('2. Создать автора', menu.create_menu),
+        '3': MenuItem('3. Изменить автора', menu.update_menu),
+        '4': MenuItem('4. Удалить автора', menu.delete_menu),
         '0': MenuItem('0. Вернуться', None)
     }
     selection_menu(menu_items)

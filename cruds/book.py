@@ -1,4 +1,4 @@
-from db_connection import script_from_file, sql_execute, SQL_REQUESTS_DIR
+from db_connection import SQL_REQUESTS_DIR, script_from_file, sql_execute
 
 REQUESTS_DIR = SQL_REQUESTS_DIR.joinpath('book')
 CREATE_REQUEST = script_from_file(REQUESTS_DIR.joinpath('create.sql'))
@@ -10,32 +10,38 @@ GET_ALL_REQUEST = script_from_file(REQUESTS_DIR.joinpath('retrieve_all.sql'))
 
 
 class BookCRUD:
-    @staticmethod
-    def create(title: str, author_id: int,
+    def create(self, title: str, author_id: int,
                genre_id: int, quantity: int) -> None:
-        sql_execute(CREATE_REQUEST.format(title=title,
-                                         author_id=author_id,
-                                         genre_id=genre_id,
-                                         quantity=quantity))
+        """Создаёт книгу с указанными параметрами"""
+        sql_execute(CREATE_REQUEST.format(
+            title=title, author_id=author_id,
+            genre_id=genre_id, quantity=quantity))
 
-    @staticmethod
-    def update(id: int, title: str, author_id: int, genre_id: int) -> None:
-        sql_execute(UPDATE_REQUEST.format(id=id,
-                                         title=title,
-                                         author_id=author_id,
-                                         genre_id=genre_id))
+    def update(self, id: int, title: str,
+               author_id: int, genre_id: int) -> None:
+        """Обновляет данные о книге с указанным ID"""
+        sql_execute(UPDATE_REQUEST.format(
+            id=id, title=title, author_id=author_id, genre_id=genre_id)
+        )
 
-    @staticmethod
-    def delete(id: int) -> None:
+    def delete(self, id: int) -> None:
+        """Удаляет книгу с указанным ID"""
         sql_execute(DELETE_REQUEST.format(id=id))
 
-    @staticmethod
-    def get_by_id(id: int) -> int | None:
+    def get_by_id(self, id: int) -> tuple[int, int, int, str, int] | None:
+        """Возвращает данные о книге с указанным ID
+        в виде кортежа (id, id_автора, id_жанра,
+         название, количество_на_балансе)"""
         books = sql_execute(GET_BY_ID_REQUEST.format(id=id))
         if len(books):
             return books[0]
 
-    @staticmethod
-    def get_all() -> list[tuple[int, str, str, str]]:
+    def get_all(self) -> list[tuple[int, str, str, str]]:
+        """Возвращает данные обо всех книгах на балансе
+        в виде списка кортежей (id, id_автора, id_жанра,
+         название, количество_на_балансе)"""
         books = sql_execute(GET_ALL_REQUEST)
         return books
+
+
+book_crud = BookCRUD()

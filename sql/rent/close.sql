@@ -1,3 +1,3 @@
 UPDATE rent
-SET closed = 1
+SET fact_close_date = "{fact_close_date}"
 WHERE id = {id}

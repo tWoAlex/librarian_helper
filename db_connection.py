@@ -25,14 +25,17 @@ def sql_execute(script: str) -> list[tuple]:
 
 
 def purge_db():
+    """Удаляет файл с базой данных"""
     Path(DATABASE_FILE).unlink(missing_ok=True)
 
 
 def create_db():
+    """Создаёт базу запросами из папки create_db_structure"""
     for script_file in Path(DB_STRUCTURE_REQUESTS_DIR).glob('*.sql'):
         sql_execute(script_from_file(script_file))
 
 
 def fulfill_db():
+    """Загружает тестовые данные из папки fulfill_db"""
     for script_file in Path(DB_FULFILL_REQUESTS_DIR).glob('*.sql'):
         sql_execute(script_from_file(script_file))
