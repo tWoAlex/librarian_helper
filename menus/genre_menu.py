@@ -44,15 +44,6 @@ class Menu:
             genre = Menu.get_by_id_menu()
         GenreCRUD.delete(genre[0])
 
-    @staticmethod
-    def load_basic_genres():
-        with open(
-            Path('sql').joinpath('genre').joinpath('basic_genres.txt'),
-            'r', encoding='utf-8'
-        ) as file:
-            titles = file.read().splitlines()
-            GenreCRUD.create_multiple(titles)
-
 
 def genre_menu():
     menu_items = {
@@ -60,8 +51,6 @@ def genre_menu():
         '2': MenuItem('2. Создать жанр', Menu.create_menu),
         '3': MenuItem('3. Изменить жанр', Menu.update_menu),
         '4': MenuItem('4. Удалить жанр', Menu.delete_menu),
-        '9': MenuItem('9. Загрузить базовый список жанров',
-                      Menu.load_basic_genres),
         '0': MenuItem('0. Вернуться', None)
     }
     selection_menu(menu_items)
