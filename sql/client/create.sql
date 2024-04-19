@@ -1,2 +1,2 @@
-INSERT INTO client (name)
-VALUES ("{name}")
+INSERT INTO client (name, longitude, latitude)
+VALUES ("{name}", {longitude}, {latitude})

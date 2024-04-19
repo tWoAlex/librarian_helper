@@ -73,6 +73,27 @@ def get_number_or_empty_menu(question: str) -> int | str:
     return count
 
 
+def get_coord_float_menu(question: str) -> float:
+    """Запрашивает у пользователя корректную координату
+    в виде числа с плавающей точкой"""
+
+    coord = None
+    while coord is None:
+        coord = input(f'{question} (вида 12.3456 или "-" для выхода): ')
+        if coord == '-':
+            raise ExitFromMenu()
+        try:
+            coord = float(coord)
+        except ValueError:
+            print('Введено некорректное число')
+            coord = None
+        else:
+            if not (-90 <= coord <= 90):
+                print('Введена некорректная коррдината')
+                coord = None
+    return round(coord, 4)
+
+
 def get_text_menu(question: str) -> str:
     """Запрашивает у пользователя непустое строковое значение
     или знак \"-\" для выхода из меню."""
@@ -104,7 +125,9 @@ def get_date_menu(question: str) -> date:
     collected_date = None
     while collected_date is None:
         try:
-            collected_date = input(f'{question} (ДД.ММ.ГГГГ или "-" для выхода): ')
+            collected_date = input(
+                f'{question} (ДД.ММ.ГГГГ или "-" для выхода): '
+            )
             collected_date = {
                 key: int(value) for key, value
                 in DATE_REGEX.fullmatch(collected_date).groupdict().items()

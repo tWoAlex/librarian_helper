@@ -10,21 +10,26 @@ GET_ALL_REQUEST = script_from_file(REQUESTS_DIR.joinpath('retrieve_all.sql'))
 
 
 class ClientCRUD:
-    def create(self, name: str) -> None:
+    def create(self, name: str, longitude: float, latitude: float) -> None:
         """Создаёт читателя с указанным именем"""
-        sql_execute(CREATE_REQUEST.format(name=name))
+        sql_execute(CREATE_REQUEST.format(
+            name=name, longitude=longitude, latitude=latitude
+        ))
 
-    def update(self, id: int, name: str) -> None:
+    def update(self, id: int, name: str,
+               longitude: float, latitude: float) -> None:
         """Обновляет имя читателя с указанным ID"""
-        sql_execute(UPDATE_REQUEST.format(id=id, name=name))
+        sql_execute(UPDATE_REQUEST.format(
+            id=id, name=name, longitude=longitude, latitude=latitude
+        ))
 
     def delete(self, id: int) -> None:
         """Удаляет читателя с указанным ID"""
         sql_execute(DELETE_REQUEST.format(id=id))
 
-    def get_by_id(self, id: int) -> tuple[int, str] | None:
+    def get_by_id(self, id: int) -> tuple[int, str, float, float] | None:
         """Возвращает данные читателя с указанным ID
-        в виде кортежа (id, имя_читателя)"""
+        в виде кортежа (id, имя_читателя, долгота, широта)"""
         clients = sql_execute(GET_BY_ID_REQUEST.format(id=id))
         if len(clients):
             return clients[0]

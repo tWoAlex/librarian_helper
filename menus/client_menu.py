@@ -1,6 +1,8 @@
 from cruds.client import client_crud
 
-from . import MenuItem, get_number_menu, get_text_menu, selection_menu
+from . import (MenuItem,
+               get_coord_float_menu, get_number_menu, get_text_menu,
+               selection_menu)
 
 
 class Menu:
@@ -20,16 +22,38 @@ class Menu:
         return client
 
     def create_menu(self) -> None:
-        client_crud.create(get_text_menu('Имя читателя'))
+        name, longitude, latitude = None, None, None
+        data_collected = False
+        while not data_collected:
+            if name is None:
+                name = get_text_menu('Имя читателя')
+            elif longitude is None:
+                longitude = get_coord_float_menu('Адрес, долгота')
+            elif latitude is None:
+                latitude = get_coord_float_menu('Адрес, широта')
+            else:
+                data_collected = True
+        client_crud.create(
+            name=name, longitude=longitude, latitude=latitude
+        )
 
     def update_menu(self) -> None:
         client, name = None, None
-        while any((client is None, name is None)):
+        longitude, latitude = None, None
+        data_collected = False
+        while not data_collected:
             if client is None:
                 client = self.get_by_id_menu()
             elif name is None:
                 name = get_text_menu('Имя читателя')
-        client_crud.update(id=client[0], name=name)
+            elif longitude is None:
+                longitude = get_coord_float_menu('Адрес, долгота')
+            elif latitude is None:
+                latitude = get_coord_float_menu('Адрес, широта')
+            else:
+                data_collected = True
+        client_crud.update(id=client[0], name=name,
+                           longitude=longitude, latitude=latitude)
 
     def delete_menu(self):
         client = None

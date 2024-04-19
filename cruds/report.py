@@ -83,5 +83,14 @@ class Reports:
             REPORTS_REQUESTS_DIR.joinpath('rents_expired.sql')
         ))
 
+    def rents_actual_with_coords(
+            self) -> list[tuple[str, str, str, float, float]] | None:
+        """Возвращает несортированный список книг на руках у читателей
+        с данными о книге, читателе и его адресе в виде кортежей
+        (имя_автора, название_книги, имя_читателя, долгота, широта)"""
+        return sql_execute(script_from_file(
+            REPORTS_REQUESTS_DIR.joinpath('rents_actual_with_coords.sql')
+        ))
+
 
 reports = Reports()

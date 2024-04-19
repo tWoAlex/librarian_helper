@@ -1,2 +1,2 @@
-SELECT * FROM client
+SELECT id, name FROM client
 ORDER BY name

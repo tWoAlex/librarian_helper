@@ -1,3 +1,6 @@
+from copy import deepcopy
+from json import dumps
+
 from cruds.report import reports
 
 from . import MenuItem, selection_menu
@@ -61,8 +64,8 @@ class Menu:
         ], sep='\n')
 
     def rents_expired(self):
-        expired_rents_file = 'Просроченные возвраты.txt'
-        with open(expired_rents_file, 'w', encoding='utf-8') as file:
+        report_file = 'Просроченные возвраты.txt'
+        with open(report_file, 'w', encoding='utf-8') as file:
             file.write('\n'.join([
                 'Просроченные возвраты:\n',
                 *[f'{client}: {author}, "{book}" ({expected_date})'
@@ -70,7 +73,45 @@ class Menu:
                   in reports.rents_expired()]
             ]))
         print('Отчёт о просроченных возвратах размещён в файле '
-              f'"{expired_rents_file}"')
+              f'"{report_file}"')
+
+    __GEORECORD = {
+        'type': 'Feature',
+        'geometry': {'type': 'Point', 'coordinates': None},
+        'properties': {'author': None, 'book': None, 'client': None}
+    }
+    __GEODICT_MAIN = {'type': 'FeatureCollection',
+                      'features': None}
+
+    def __generate_georecord(author: str, book: str, client: str,
+                             longitude: float, latitude: float) -> dict:
+        new_record = deepcopy(Menu.__GEORECORD)
+        new_record['geometry']['coordinates'] = [longitude, latitude]
+
+        properties = new_record['properties']
+        properties['author'] = author
+        properties['book'] = book
+        properties['client'] = client
+
+        return new_record
+
+    def __generate_geodict(
+            rents: list[tuple[str, str, str, float, float]]) -> dict:
+        geodict = deepcopy(Menu.__GEODICT_MAIN)
+        geodict['features'] = [
+            Menu.__generate_georecord(*rent) for rent in rents
+        ]
+        return geodict
+
+    def rents_actual_with_coords(self):
+        report_file = 'Actual_rents_with_coords.json'
+        data = Menu.__generate_geodict(
+            reports.rents_actual_with_coords()
+        )
+        with open(report_file, 'w', encoding='utf-8') as file:
+            file.write(dumps(data, ensure_ascii=False))
+        print('Отчёт об книгах на руках у пользователей размещён в файле '
+              f'"{report_file}"')
 
 
 menu = Menu()
@@ -96,6 +137,8 @@ def report_menu():
         '10': MenuItem('10. Жанры: самые популярные для читателей',
                        menu.clients_favorite_genre),
         '11': MenuItem('11. Просроченные возвраты', menu.rents_expired),
+        '12': MenuItem('12. Книги у читателей с координатами',
+                       menu.rents_actual_with_coords),
         '0': MenuItem('0. Вернуться', None)
     }
     selection_menu(menu_items)

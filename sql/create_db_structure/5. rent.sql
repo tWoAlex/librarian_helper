@@ -1,3 +1,5 @@
+-- Структура записи о выдаче книги.
+
 CREATE TABLE rent (
     id INTEGER PRIMARY KEY ASC,
     book_id INTEGER NOT NULL,
