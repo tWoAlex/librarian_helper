@@ -60,6 +60,18 @@ class Menu:
               for client, genre, count in reports.clients_favorite_genre()]
         ], sep='\n')
 
+    def rents_expired(self):
+        expired_rents_file = 'Просроченные возвраты.txt'
+        with open(expired_rents_file, 'w', encoding='utf-8') as file:
+            file.write('\n'.join([
+                'Просроченные возвраты:\n',
+                *[f'{client}: {author}, "{book}" ({expected_date})'
+                  for client, author, book, expected_date
+                  in reports.rents_expired()]
+            ]))
+        print('Отчёт о просроченных возвратах размещён в файле '
+              f'"{expired_rents_file}"')
+
 
 menu = Menu()
 
@@ -83,6 +95,7 @@ def report_menu():
         '9': MenuItem('9. Жанры: популярность', menu.genres_most_popular),
         '10': MenuItem('10. Жанры: самые популярные для читателей',
                        menu.clients_favorite_genre),
+        '11': MenuItem('11. Просроченные возвраты', menu.rents_expired),
         '0': MenuItem('0. Вернуться', None)
     }
     selection_menu(menu_items)

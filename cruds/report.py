@@ -75,5 +75,13 @@ class Reports:
             REPORTS_REQUESTS_DIR.joinpath('clients_favorite_genre.sql')
         ))
 
+    def rents_expired(self) -> list[tuple[str, str, str, str]]:
+        """Возвращает данные о просроченных, не осуществлённых возвратах
+        в виде списка кортежей
+        (имя_читателя, имя_автора, название_книги, ожидаемая_дата_сдачи)"""
+        return sql_execute(script_from_file(
+            REPORTS_REQUESTS_DIR.joinpath('rents_expired.sql')
+        ))
+
 
 reports = Reports()
